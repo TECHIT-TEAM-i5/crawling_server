@@ -1,9 +1,9 @@
 package com.example.crawling.artist.repo;
 
 import com.example.crawling.artist.entity.ArtistGenre;
-import com.example.crawling.entity.QArtist;
-import com.example.crawling.entity.QArtistGenre;
-import com.example.crawling.entity.QGenre;
+import com.example.crawling.artist.entity.QArtist;
+import com.example.crawling.artist.entity.QArtistGenre;
+import com.example.crawling.genre.entity.QGenre;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
