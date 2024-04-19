@@ -50,14 +50,14 @@ public class EmailAlertService {
 
         List<Alert> alerts = alertRepository.findByShowInfoId(showInfoId);
         for (Alert alert : alerts) {
-                log.info("send email to RabbitMQ");
-                alert.setMessage(generateMessage(alert, alert.getUserNickname()));
-                AlertDto alertDto = AlertDto.builder()
-                        .email(alert.getUserEmail())
-                        .title(alert.getTitle())
-                        .message(alert.getMessage()).build();
-                // 메시지 큐로 전송
-                rabbitTemplate.convertAndSend(queue.getName(), gson.toJson(alertDto));
+            log.info("send email to RabbitMQ");
+            alert.setMessage(generateMessage(alert, alert.getUserNickname()));
+            AlertDto alertDto = AlertDto.builder()
+                    .email(alert.getUserEmail())
+                    .title(alert.getTitle())
+                    .message(alert.getMessage()).build();
+            // 메시지 큐로 전송
+            rabbitTemplate.convertAndSend(queue.getName(), gson.toJson(alertDto));
         }
     }
 
@@ -68,15 +68,10 @@ public class EmailAlertService {
                 String userEmail = subscribe.getUserEntity().getEmail();
                 Optional<Alert> alertOptional = alertRepository.
                         findByUserEmailAndShowInfoId(userEmail, artist.getShowInfo().getId());
-                Alert alert;
-                // 이미 해당 구독자 유저에 대한 알림이 생성된 상태이면 이미 생성된 alert에 추가만 하고 알림 이메일은 보내지 않음
-                if (alertOptional.isPresent()) {
-                    alert = alertOptional.get();
-                    alert.setArtistSubscribe(subscribe);
-                    alertRepository.save(alert);
-                } else {
 
-                    alert = Alert.builder()
+                // 이미 해당 구독자 유저에 대한 알림이 생성된 상태이면 이미 생성된 alert에 추가만 하고 알림 이메일은 보내지 않음
+                if (alertOptional.isEmpty()) {
+                    Alert alert = Alert.builder()
                             .showInfo(artist.getShowInfo())
                             .userEmail(subscribe.getUserEntity().getEmail())
                             .userNickname(subscribe.getUserEntity().getNickname())
@@ -84,7 +79,7 @@ public class EmailAlertService {
                             .title(EMAIL_ALARM_TITLE)
                             .build();
 
-                    alert = alertRepository.save(alert);
+                    alertRepository.save(alert);
                 }
             }
         }
@@ -104,12 +99,12 @@ public class EmailAlertService {
                     alertRepository.save(alert);
                 } else { // 한 유저에 대한 알림이 생성되지 않은 상태이면 새로 생성
                     alert = Alert.builder()
-                        .showInfo(genre.getShowInfo())
-                        .genreSubscribe(subscribe)
-                        .title(EMAIL_ALARM_TITLE)
-                        .userEmail(userEmail)
-                        .userNickname(subscribe.getUserEntity().getNickname())
-                        .build();
+                            .showInfo(genre.getShowInfo())
+                            .genreSubscribe(subscribe)
+                            .title(EMAIL_ALARM_TITLE)
+                            .userEmail(userEmail)
+                            .userNickname(subscribe.getUserEntity().getNickname())
+                            .build();
                     alertRepository.save(alert);
                 }
             }
