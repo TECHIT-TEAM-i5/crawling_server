@@ -69,7 +69,7 @@ public class EmailAlertService {
                 Optional<Alert> alertOptional = alertRepository.
                         findByUserEmailAndShowInfoId(userEmail, artist.getShowInfo().getId());
 
-                // 이미 해당 구독자 유저에 대한 알림이 생성된 상태이면 이미 생성된 alert에 추가만 하고 알림 이메일은 보내지 않음
+                // 해당 구독자에 해당 공연의 알람이 생성되지 않았으면 알람 생성
                 if (alertOptional.isEmpty()) {
                     Alert alert = Alert.builder()
                             .showInfo(artist.getShowInfo())
@@ -92,11 +92,15 @@ public class EmailAlertService {
                 String userEmail = subscribe.getUserEntity().getEmail();
                 Optional<Alert> alertOptional = alertRepository.findByUserEmailAndShowInfoId(userEmail, genre.getShowInfo().getId());
                 Alert alert;
-                // 이미 해당 구독자 유저에 대한 알림이 생성된 상태이면 이미 생성된 alert에 추가만 하고 알림 이메일은 보내지 않음
+                // 이미 해당 구독자 유저에 대한 알림이 생성된 상태이면 이미 생성된 alert 에 추가만 하고 알림 이메일은 보내지 않음
                 if (alertOptional.isPresent()) {
                     alert = alertOptional.get();
-                    alert.setGenreSubscribe(subscribe);
-                    alertRepository.save(alert);
+                    // 장르가 없을때만 정해주고 아니면 넘어감
+                    if(alert.getGenreSubscribe() == null){
+                        alert.setGenreSubscribe(subscribe);
+                        alertRepository.save(alert);
+                    }
+
                 } else { // 한 유저에 대한 알림이 생성되지 않은 상태이면 새로 생성
                     alert = Alert.builder()
                             .showInfo(genre.getShowInfo())
