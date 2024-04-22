@@ -53,6 +53,9 @@ dependencies {
 	// mock 데이터를 위함
 	implementation 'org.springframework:spring-test:5.3.18'
 
+	// mysql
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
