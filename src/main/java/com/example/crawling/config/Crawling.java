@@ -203,7 +203,7 @@ Crawling {
                 showInfoService.create(showInfoRequestDto, imageUrl);
 
                 driver.navigate().back();
-                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("list-bigger-txt")));
             }
 
